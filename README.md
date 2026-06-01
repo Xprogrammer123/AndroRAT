@@ -7,9 +7,9 @@
 
 AndroRAT is a tool designed to give the control of the android system remotely and retrieve informations from it. Androrat is a client/server application developed in Java Android for the client side and the Server is in Python.
 
-##### AndroRAT will work on device from Android 4.1 (Jelly Bean) to Android 9.0 (Oreo) (API 16 to API 28)
+##### AndroRAT targets Android 5.0 (Lollipop, API 21) through Android 14 (API 34)
 
-> AndroRAT also works on Android 10 (Q) but some of the interpreter command will be unstable. 
+> Some interpreter commands may be unstable on the newest Android versions because of stricter background, storage, and permission rules. 
 
 ## Screenshots
 
@@ -78,6 +78,15 @@ Usage:
 ```
 
 Or you can manually build the apk by importing [Android Code](Android_Code) folder to Android Studio and changing the IP address and port number in [config.java](Android_Code/app/src/main/java/com/example/reverseshell2/config.java) file and then you can generate the signed apk from `Android Studio -> Build -> Generate Signed APK(s)`
+
+**TG-RAT / `python3 androRAT.py --build`:** that path rebuilds the pre-decompiled tree under `Compiled_apk/` with apktool. After changing `Android_Code/`, refresh it once:
+
+```bash
+cd Android_Code && ./gradlew assembleRelease
+apktool d app/build/outputs/apk/release/app-release-unsigned.apk -o ../Compiled_apk -f
+```
+
+Then verify `utils.py` `build()` still patches the correct lines in `Compiled_apk/smali/.../config.smali`.
 ### `shell` mode
 ```
 Usage:
